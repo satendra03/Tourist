@@ -8,6 +8,7 @@ import Locationinfo from '../Elements/Locationinfo';
 import Hotels from '../Elements/Hotels';
 import { LogInContext } from '@/Context/LogInContext/Login';
 import Places from '../Elements/Places';
+import TravelCost from '../Elements/TravelCost';
 
 function Mytrips() {
   const { tripId } = useParams();
@@ -33,6 +34,7 @@ function Mytrips() {
   return (
     <div className='py-2'>
       <Locationinfo/>
+      <TravelCost/>
       <Hotels/>
       <Places/>
     </div>

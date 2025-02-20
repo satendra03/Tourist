@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import React, { useContext, useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import {
+  TravelPrompt,
   PROMPT,
   SelectBudgetOptions,
   SelectNoOfPersons,
@@ -27,6 +28,8 @@ import { db } from "@/Service/Firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import ReactGoogleAutocomplete from "react-google-autocomplete";
+import { getTravelCostDetails } from "@/Service/TravelCostDetails";
+
 
 function CreateTrip({createTripPageRef}) {
   const [place, setPlace] = useState("");
@@ -63,7 +66,7 @@ function CreateTrip({createTripPageRef}) {
     }
   }, [user]);
 
-  const SaveTrip = async (TripData) => {
+  const SaveTrip = async (TripData, transportCost) => {
     const User = JSON.parse(localStorage.getItem("User"));
     const id = Date.now().toString();
     setIsLoading(true);
@@ -71,14 +74,33 @@ function CreateTrip({createTripPageRef}) {
       tripId: id,
       userSelection: formData,
       tripData: TripData,
-
+      transportCost: transportCost,
       userName: User?.name,
       userEmail: User?.email,
     });
     setIsLoading(false);
-    localStorage.setItem("Trip", JSON.stringify(TripData));
+    // localStorage.setItem("Trip", JSON.stringify(TripData));
+    localStorage.setItem("Trip", JSON.stringify({ 
+      tripData: TripData, 
+      transportCost: transportCost 
+  }));
     navigate("/my-trips/" + id);
   };
+
+  const downloadJSON = (data, filename = "trip_details.json") => {
+    const jsonString = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+};
 
   const generateTrip = async () => {
     if (!isAuthenticated) {
@@ -95,8 +117,8 @@ function CreateTrip({createTripPageRef}) {
     ) {
       return toast.error("Please fill out every field or select every option.");
     }
-    if (formData?.noOfDays > 5) {
-      return toast.error("Please enter Trip Days less then 5");
+    if (formData?.noOfDays > 10) {
+      return toast.error("Please enter Trip Days less then 10");
     }
     if (formData?.noOfDays < 1) {
       return toast.error("Invalid number of Days");
@@ -106,6 +128,8 @@ function CreateTrip({createTripPageRef}) {
       .replace(/{People}/g, formData?.People)
       .replace(/{Budget}/g, formData?.Budget);
 
+    const TravelCostPrompt = TravelPrompt.replace(/{location}/g, formData?.location);
+
     try {
       const toastId = toast.loading("Generating Trip", {
         icon: "✈️",
@@ -114,8 +138,13 @@ function CreateTrip({createTripPageRef}) {
       setIsLoading(true);
       const result = await chatSession.sendMessage(FINAL_PROMPT);
       const trip = JSON.parse(result.response.text());
+      const travelCost = await getTravelCostDetails.sendMessage(TravelCostPrompt);
+      const transportCost = JSON.parse(travelCost.response.text());
       setIsLoading(false);
-      SaveTrip(trip);
+      SaveTrip(trip, transportCost);
+
+      // const tripData = { trip, transportCost };
+      // downloadJSON(tripData);
 
       toast.dismiss(toastId);
       toast.success("Trip Generated Successfully");
@@ -140,7 +169,7 @@ function CreateTrip({createTripPageRef}) {
         <p className="opacity-90 mx-auto text-center text-md md:text-xl font-medium tracking-tight text-primary/80">
           Embark on your dream adventure with just a few simple details. <br />
           <span className="bg-gradient-to-b text-2xl from-blue-400 to-blue-700 bg-clip-text text-center text-transparent">
-            JourneyJolt
+          EaseMyTrip
           </span>{" "}
           <br /> will curate a personalized itinerary, crafted to match your
           unique preferences!
@@ -208,8 +237,8 @@ function CreateTrip({createTripPageRef}) {
             </span>{" "}
             💳
           </h2>
-          <div className="options grid grid-cols-1 gap-5 md:grid-cols-3">
-            {SelectBudgetOptions.map((item) => {
+          {/* <div className="options grid grid-cols-1 gap-5 md:grid-cols-3"> */}
+            {/* {SelectBudgetOptions.map((item) => {
               return (
                 <div
                   onClick={(e) => handleInputChange("Budget", item.title)}
@@ -231,8 +260,20 @@ function CreateTrip({createTripPageRef}) {
                   <p className="bg-gradient-to-b from-primary/90 to-primary/60 bg-clip-text text-transparent">{item.desc}</p>
                 </div>
               );
-            })}
-          </div>
+            })} */}
+
+            <Input
+            className="text-center"
+            placeholder="Ex: 5000 (local currency)"
+            type="number"
+            // min="1000"
+            // max="50000"
+            name="Budget"
+            required
+            onChange={(Budget) => handleInputChange("Budget", Budget.target.value)}
+          />
+
+          {/* </div> */}
         </div>
 
         <div className="people">
@@ -292,8 +333,8 @@ function CreateTrip({createTripPageRef}) {
               <span className="flex gap-2">
                 <span className="text-center w-full opacity-90 mx-auto tracking-tight text-primary/80">
                   {user
-                    ? "Logged In Securely to JourneyJolt with Google Authentication"
-                    : "Sign In to JourneyJolt with Google Authentication Securely"}
+                    ? "Logged In Securely to EaseMyTrip with Google Authentication"
+                    : "Sign In to EaseMyTrip with Google Authentication Securely"}
                 </span>
               </span>
               {user ? (

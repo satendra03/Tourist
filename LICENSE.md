@@ -1,6 +1,6 @@
 Private License
 
-Copyright (c) 2025 Satendra Kumar Parteti
+Copyright (c) 2025 Tourist
 
 All rights reserved.
 

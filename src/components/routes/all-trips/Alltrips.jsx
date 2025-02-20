@@ -27,6 +27,24 @@ function Alltrips() {
     getAllTrips();
   }, [user]);
 
+  if (allTrips?.length == 0) {
+
+    return (
+      <div className="mb-10">
+      <h1 className="text-3xl md:text-5xl font-bold text-center my-5 md:my-10 bg-gradient-to-b from-primary/90 to-primary/60 bg-clip-text text-transparent">
+        All Trips
+      </h1>
+
+      <div className="flex gap-3 flex-wrap justify-evenly items-center">
+      <h3 className="text-center text-xl h-[60vh]">No Trips Found</h3>
+    </div>
+
+
+      </div>
+    )
+
+  }
+
   return (
     <div className="mb-10">
       <h1 className="text-3xl md:text-5xl font-bold text-center my-5 md:my-10 bg-gradient-to-b from-primary/90 to-primary/60 bg-clip-text text-transparent">
