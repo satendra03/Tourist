@@ -14,6 +14,6 @@ developed AI Based Trip Planner
 
 4. **Pranjay Tiwari**: Backend Developer
 
-5. **Shraddha Shrivastav**: Data Analysit
+5. **Shradha Shrivastava**: Data Analyst
 
 ---
