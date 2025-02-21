@@ -11,12 +11,26 @@ import {
 } from "@/components/ui/card";
 
 function TravelCost() {
-  const { trip } = useContext(LogInContext);
-  // console.log(trip?.transportCost?.transportation_details); 
-  // console.log(trip?.transportCost?.transportation_details[0].mode); 
+  const { trip } = useContext(LogInContext); 
+
+  // if (trip?.transportCost?.transportation_details) {
+  //   trip?.transportCost?.transportation_details.forEach(item => {
+  //       if (item.mode) {
+  //           item.mode = item.mode.split(" ")[0]; // Keep only the first word
+  //       }
+  //   });
+
+  //   const places = ["Auto", "Cab", "Bus", "Metro"];
+
+  //   trip.transportCost.transportation_details = trip?.transportCost?.transportation_details.filter(item => places.includes(item.mode));
+
+    // change
+// }
+
+// console.log(trip);
 
   return (
-    // <div>
+
     <div className=" my-[15vh]">
       <h2 className="opacity-90 mx-auto text-center text-3xl font-black text-primary/80 md:text-5xl">
         Travel Cost
@@ -28,11 +42,11 @@ function TravelCost() {
       <div className="main-info mt-2 md:mt-4">
         <div className="flex flex-col items-center justify-center mt-4">
           <Tabs
-            defaultValue={trip?.transportCost?.transportation_details[0].mode}
-            className="max-w-[600px]"
+            defaultValue={"Auto 🛺"}
+            className="w-[600px]"
           >
             <TabsList className="grid w-full grid-cols-4 h-10">
-              {trip?.transportCost?.transportation_details.map(
+              {trip?.transportCost?.transportCost?.transportation_details?.map(
                 (item, index) => {
                   return (
                     <TabsTrigger className="h-8" key={index} value={item.mode}>
@@ -43,7 +57,7 @@ function TravelCost() {
               )}
             </TabsList>
 
-            {trip?.transportCost?.transportation_details.map((item, index) => {
+            {trip?.transportCost?.transportCost?.transportation_details?.map((item, index) => {
               return (
                 <TabsContent key={index} value={item.mode}>
                   <Card className="p-10">

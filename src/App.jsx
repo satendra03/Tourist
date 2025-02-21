@@ -57,18 +57,22 @@ function App() {
     }
 
     // Create Trip Page
+    const startLocation = createTripPageRef.current?.querySelector(".startLocation");
     const text = createTripPageRef.current?.querySelector(".text");
     const place = createTripPageRef.current?.querySelector(".place");
     const day = createTripPageRef.current?.querySelector(".day");
+    const date = createTripPageRef.current?.querySelector(".date");
     const budget = createTripPageRef.current?.querySelector(".budget");
     const people = createTripPageRef.current?.querySelector(".people");
     const createTripBtn =
       createTripPageRef.current?.querySelector(".create-trip-btn");
-    if (text && place && day && budget && people && createTripBtn) {
+    if (startLocation && text && place && day && budget && people && createTripBtn) {
       timeline
-        .from(text, { opacity: 0, y: 100 })
+      .from(text, { opacity: 0, y: 100 })
+      .from(startLocation, { opacity: 0, y: 100 }, "-=0.3")
         .from(place, { opacity: 0, y: 100 }, "-=0.3")
         .from(day, { opacity: 0, y: 100 }, "-=0.3")
+        .from(date, { opacity: 0, y: 100 }, "-=0.3")
         .from(budget, { opacity: 0, y: 100 }, "-=0.3")
         .from(people, { opacity: 0, y: 100 }, "-=0.3")
         .from(createTripBtn, { opacity: 0, y: 100 }, "-=0.3");

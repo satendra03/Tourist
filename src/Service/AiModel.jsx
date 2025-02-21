@@ -42,43 +42,42 @@ export const chatSession = model.startChat({
 });
 
 
+export const getStationCodeCall = model.startChat({
+  generationConfig,
+  history : [
+    {
+      role: "user",
+      parts: [
+        {
+          text: "Convert the given railway station name and location into the official IRCTC station code. For example, 'jabalpur, madhya pradesh, india' → 'JBP' and 'bhopal, madhya pradesh, india' → 'BPL'. Provide the IRCTC codes for Source: {jabalpur, madhya pradesh, inda} and Destination: {bhopal, madhyapradesh, india} in JSON format Ensure accuracy based on Indian Railways' official station codes.",
+        }
+      ],
+    },
+    {
+      role: "model",
+      parts: [
+        {text: "json\n{\n  \"source\": \"JBP\",\n  \"destination\": \"BPL\"\n}\n\n",}
+      ],
+    },
+  ]
+})
 
-// import os
-// import google.generativeai as genai
 
-// genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
-// // # Create the model
-// generation_config = {
-//   "temperature": 1,
-//   "top_p": 0.95,
-//   "top_k": 40,
-//   "max_output_tokens": 8192,
-//   "response_mime_type": "text/plain",
-// }
-
-// model = genai.GenerativeModel(
-//   model_name="gemini-2.0-flash",
-//   generation_config=generation_config,
-// )
-
-// chat_session = model.start_chat(
-  // history=[
-  //   {
-  //     "role": "user",
-  //     "parts": [
-  //       "Generate transportation details for average cost of traveling in {Lucknow,Uttar Pradesh, India} . Include the mode of transport, average duration, avg cost per person for all mode of transport from (auto,cab,bus,metro) if any of the mode of transport not available mention \"Not Available\"\nOutput format  : JSON ",
-  //     ],
-  //   },
-  //   {
-  //     "role": "model",
-  //     "parts": [
-  //       "json\n{\n  \"city\": \"Lucknow, Uttar Pradesh, India\",\n  \"transportation_details\": [\n    {\n      \"mode\": \"Auto Rickshaw\",\n      \"average_duration\": \"Varies depending on distance; typically 15-45 minutes within the city.\",\n      \"average_cost_per_person\": \"₹50 - ₹200 (depending on distance and negotiation)\",\n       \"notes\": \"Bargaining is often necessary.\"\n    },\n    {\n      \"mode\": \"Cab (Ola/Uber/Local Taxis)\",\n      \"average_duration\": \"Varies depending on distance and traffic; generally 15-60 minutes within the city.\",\n      \"average_cost_per_person\": \"₹150 - ₹400 (depending on distance, time of day, and cab type)\",\n      \"notes\": \"Prices fluctuate based on demand.\"\n    },\n    {\n      \"mode\": \"Bus (Local City Buses)\",\n      \"average_duration\": \"Varies greatly depending on route and traffic; typically 30-90 minutes.\",\n      \"average_cost_per_person\": \"₹10 - ₹30\",\n      \"notes\": \"Can be crowded, but a budget-friendly option.\"\n    },\n    {\n      \"mode\": \"Metro\",\n      \"average_duration\": \"Varies depending on the route. Usually, it's faster than road transport due to dedicated lanes.\",\n      \"average_cost_per_person\": \"₹10 - ₹60 (depending on the distance)\",\n      \"notes\": \"Lucknow Metro has limited coverage, so check if it serves your desired locations.\"\n    }\n  ]\n}\n",
-  //     ],
-  //   },
-  // ]
-// )
-
-// response = chat_session.send_message("INSERT_INPUT_HERE")
-
-// print(response.text)
+export const getFood = model.startChat({
+  generationConfig,
+  history: [
+    {
+      role: "user",
+      parts: [{text:
+        "Generate a list of famous local restaurants in {Bhopal, Madhya Pradesh, India} with their signature dishes within the budget {2000}. \nEach restaurant should have:\n- Name of the restaurant\n- Most famous dish served there\n- A short description\n- Complete address\n- Average customer rating (out of 5)\n- Approximate price range per person in INR\n- Google Maps location link\n- Latitude and longitude coordinates\n- An image URL representing the restaurant or dish\nALL THE RESTAURANTS COST SHOULD BE UNDER BUDGET\n\nexample JSON format:\n\"restaurants\": [\n  {\n    \"name\": \"Bade Miyan\",\n    \"famous_dish\": \"Kebabs\",\n    \"description\": \"A legendary eatery in Mumbai famous for its mouthwatering kebabs and rolls.\",\n    \"address\": \"Tulloch Road, Apollo Bandar, Colaba, Mumbai, Maharashtra 400001\",\n    \"rating\": 4.3,\n    \"price_range\": \"₹200-₹500 per person\",\n    \"location\": \"https://goo.gl/maps/F3Yv5pE3hXk\",\n    \"coordinates\": \"18.9220, 72.8335\",\n    \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Bade_Miyan_Kebabs.jpg/800px-Bade_Miyan_Kebabs.jpg\"\n  },\n  {\n    \"name\": \"Peter Cat\",\n    \"famous_dish\": \"Chelo Kebab\",\n    \"description\": \"One of Kolkata's most iconic restaurants, known for its delicious Chelo Kebabs.\",\n    \"address\": \"18, Park Street, Taltala, Kolkata, West Bengal 700071\",\n    \"rating\": 4.5,\n    \"price_range\": \"₹400-₹700 per person\",\n    \"location\": \"https://goo.gl/maps/Y8G5Q2CzW1D2\",\n    \"coordinates\": \"22.5531, 88.3501\",\n    \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Peter_Cat_Chelo_Kebab.jpg/800px-Peter_Cat_Chelo_Kebab.jpg\"\n  },\n  {\n    \"name\": \"Mavalli Tiffin Room (MTR)\",\n    \"famous_dish\": \"Rava Idli\",\n    \"description\": \"A historic eatery in Bangalore, famous for inventing the Rava Idli.\",\n    \"address\": \"14, Lalbagh Road, Mavalli, Bangalore, Karnataka 560004\",\n    \"rating\": 4.6,\n    \"price_range\": \"₹150-₹300 per person\",\n    \"location\": \"https://goo.gl/maps/ZP7j4rXyYwB2\",\n    \"coordinates\": \"12.9543, 77.5735\",\n    \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Rava_Idli_MTR.jpg/800px-Rava_Idli_MTR.jpg\"\n  },\n  {\n    \"name\": \"Karim's\",\n    \"famous_dish\": \"Mutton Korma\",\n    \"description\": \"A legendary Mughlai restaurant near Jama Masjid, serving rich and authentic mutton dishes.\",\n    \"address\": \"16, Gali Kababian, Jama Masjid, Old Delhi, Delhi 110006\",\n    \"rating\": 4.4,\n    \"price_range\": \"₹300-₹600 per person\",\n    \"location\": \"https://goo.gl/maps/JX6F1h9W6pM2\",\n    \"coordinates\": \"28.6505, 77.2334\",\n    \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Karims_Mutton_Korma.jpg/800px-Karims_Mutton_Korma.jpg\"\n  }\n]\n\n\nReturn the response in  mentioned JSON format.\n",
+    }],
+    },
+    {
+      role: "model",
+      parts: [{text:
+        "json\n{\n  \"restaurants\": [\n    {\n      \"name\": \"Hakeem's Restaurant\",\n      \"famous_dish\": \"Mutton Biryani\",\n      \"description\": \"A popular restaurant in Bhopal, especially known for its flavorful and aromatic Mutton Biryani. They offer a traditional taste.\",\n      \"address\": \"Shop No. 15, Peer Gate, Ibrahimpura, Bhopal, Madhya Pradesh 462001\",\n      \"rating\": 4.2,\n      \"price_range\": \"₹200-₹400 per person\",\n      \"location\": \"https://maps.app.goo.gl/97TzV1Xv6H1V2j7A7\",\n      \"coordinates\": \"23.2571, 77.4138\",\n      \"image_url\": \"https://b.zmtcdn.com/data/pictures/chains/7/18450777/895878e296c376c620dfb7a0b49323a0_o2_featured_v2.jpg\"\n    },\n    {\n      \"name\": \"Zam Zam Fast Food\",\n      \"famous_dish\": \"Chicken Tikka Roll\",\n      \"description\": \"Zam Zam is famous for its quick service and delicious chicken tikka rolls. A must-try spot for a fast and filling meal.\",\n      \"address\": \"Shop No. 1, Behind Taj-ul-Masajid, Itwara Rd, Peer Gate Area, Bhopal, Madhya Pradesh 462001\",\n      \"rating\": 4.0,\n      \"price_range\": \"₹100-₹200 per person\",\n      \"location\": \"https://maps.app.goo.gl/N8c4gJzXhV3qgE2b9\",\n      \"coordinates\": \"23.2579, 77.4132\",\n      \"image_url\": \"https://lh3.googleusercontent.com/p/AF1QipNl5h6t7yW45U533qg4zQxG1l_H-B4Q44q-xM7E=s1600\"\n    },\n    {\n      \"name\": \"Manohar Dairy & Restaurant\",\n      \"famous_dish\": \"Poha\",\n      \"description\": \"Manohar Dairy is a well-known chain restaurant and is loved for its freshly made poha and sweets. Great for breakfast or a snack.\",\n      \"address\": \"MP Nagar, Zone-I, Bhopal, Madhya Pradesh 462011\",\n      \"rating\": 4.1,\n      \"price_range\": \"₹150-₹300 per person\",\n      \"location\": \"https://maps.app.goo.gl/hP5zFqgNfXUaH47g8\",\n      \"coordinates\": \"23.2379, 77.4567\",\n      \"image_url\": \"https://content3.jdmagicbox.com/comp/bhopal/d9/0755px755.x755.180117182401.l4d9/catalogue/manohar-dairy-and-restaurant-m-p-nagar-bhopal-sweet-shops-n4q0z.jpg\"\n    },\n    {\n      \"name\": \"Chatori Gali\",\n      \"famous_dish\": \"Variety of Street Food\",\n      \"description\": \"Chatori Gali is a bustling street food hub where you can savor a wide variety of local snacks and dishes. Perfect for experiencing Bhopal's street food culture.\",\n      \"address\": \"Hamidia Road, Near Jama Masjid, Bhopal, Madhya Pradesh\",\n      \"rating\": 3.9,\n      \"price_range\": \"₹50-₹150 per person\",\n      \"location\": \"https://www.google.com/maps/place/Chatori+Gali/@23.2590768,77.415515,17z/data=!3m1!4b1!4m6!3m5!1s0x398ee9c003c9e99f:0xe0b54cf30469e6d2!8m2!3d23.2590768!4d77.415515!16s%2Fg%2F11c7s5q2_r\",\n      \"coordinates\": \"23.2591, 77.4155\",\n      \"image_url\": \"https://i.ytimg.com/vi/cT47yq-9tB0/maxresdefault.jpg\"\n    },\n    {\n      \"name\": \"Bhopal Darbar\",\n      \"famous_dish\": \"Chicken Biryani\",\n      \"description\": \"A popular spot in Bhopal known for its delicious Chicken Biryani and other Mughlai dishes. It is a great place for both locals and tourists to get a taste of the region's cuisine.\",\n      \"address\": \"Ibrahimpura, Peer Gate Area, Bhopal, Madhya Pradesh 462001\",\n      \"rating\": 4.0,\n      \"price_range\": \"₹250-₹500 per person\",\n      \"location\": \"https://www.google.com/maps/place/Bhopal+Darbar/@23.2584836,77.4102895,17z/data=!3m1!4b1!4m6!3m5!1s0x398ee9c05b50c23d:0xcffb09d3069f8841!8m2!3d23.2584836!4d77.4102895!16s%2Fg%2F11clm6d9f4\",\n      \"coordinates\": \"23.2585, 77.4103\",\n      \"image_url\": \"https://content3.jdmagicbox.com/comp/bhopal/j5/0755px755.x755.180423132836.q2j5/catalogue/bhopal-darbar-peer-gate-area-bhopal-non-vegetarian-restaurants-23zgy7h.jpg\"\n    }\n  ]\n}\n",
+    }],
+    },
+  ]
+})
