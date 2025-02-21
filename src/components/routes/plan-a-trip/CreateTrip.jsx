@@ -252,8 +252,8 @@ function formatDateForInput(dateString) {
       setIsLoading(false);
       SaveTrip(trip, transportCost, stationCodeData, finalDate, trains, foodCost);
 
-      const tripData = { trip, transportCost, stationCodeData, finalDate, trains, foodCost };
-      downloadJSON(tripData);
+      // const tripData = { trip, transportCost, stationCodeData, finalDate, trains, foodCost };
+      // downloadJSON(tripData);
 
       toast.dismiss(toastId);
       toast.success("Trip Generated Successfully");
