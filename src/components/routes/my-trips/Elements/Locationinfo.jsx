@@ -15,6 +15,7 @@ import { useRefContext } from "@/Context/RefContext/RefContext";
 
 function Locationinfo() {
   const { trip } = useContext(LogInContext);
+  console.log("Trip", trip);
   const [cityDets, setCityDets] = useState([]);
   const [photos, setPhotos] = useState("");
   const [Url, setUrl] = useState("");
@@ -55,7 +56,8 @@ function Locationinfo() {
   const randomCompliment =
     compliments[Math.floor(Math.random() * compliments.length)];
 
-  const city = trip?.tripData?.location;
+  const city = trip?.userSelection?.location;
+  console.log("City", city);
 
   const getCityInfo = async () => {
     const data = {
@@ -70,6 +72,8 @@ function Locationinfo() {
       })
       .catch((err) => console.log(err));
   };
+
+  console.log(allImages);
 
   useEffect(() => {
     trip && getCityInfo();

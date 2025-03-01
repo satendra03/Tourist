@@ -75,25 +75,6 @@ function Mytrips() {
   return (
     <div ref={contentRef} className="py-2">
       <Locationinfo />
-      {/* <div className="w-full justify-center flex items-center">
-        <Button
-          onClick={handlePrint}
-          className="mt-5 py-2 px-4 rounded bg-green-400 hover:bg-green-600"
-        >
-          {loading ? (
-            <AiOutlineLoading className="animate-spin" />
-          ) : (
-            <>
-              {" "}
-              Save Offline <DownloadIcon />
-            </>
-          )}
-        </Button>
-      </div> */}
-      <TravelCost />
-      <TrainSchedule></TrainSchedule>
-      <Hotels />
-      <Restaurants />
       <Places />
     </div>
   );

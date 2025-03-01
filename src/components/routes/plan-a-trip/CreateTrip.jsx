@@ -8,6 +8,7 @@ import {
   SelectNoOfPersons,
   getStationCodePrompt,
   getFoodPrompt,
+  newTripPrompt,
 } from "../../constants/Options";
 import {
   Dialog,
@@ -22,7 +23,7 @@ import { FcGoogle } from "react-icons/fc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
-import { chatSession, getFood, getStationCodeCall } from "@/Service/AiModel";
+import { chatSession, getFood, getNewTrip, getStationCodeCall } from "@/Service/AiModel";
 
 import { LogInContext } from "@/Context/LogInContext/Login";
 
@@ -127,7 +128,7 @@ function formatDateForInput(dateString) {
     }
   }, [user]);
 
-  const SaveTrip = async (TripData, transportCost, stationCodeData, finalDate, trains, foodCost) => {
+  const SaveTrip = async (TripData) => {
     const User = JSON.parse(localStorage.getItem("User"));
     const id = Date.now().toString();
     setIsLoading(true);
@@ -135,25 +136,14 @@ function formatDateForInput(dateString) {
       tripId: id,
       userSelection: formData,
       tripData: TripData,
-      transportCost: transportCost,
-      stationCodeData: stationCodeData,
-      food: foodCost,
-      startDate: finalDate,
-      trains: trains,
       userName: User?.name,
       userEmail: User?.email,
     });
     setIsLoading(false);
-    // localStorage.setItem("Trip", JSON.stringify(TripData));
     localStorage.setItem(
       "Trip",
       JSON.stringify({
         tripData: TripData,
-        food: foodCost,
-        transportCost: transportCost,
-        stationCodeData: stationCodeData,
-        startDate: finalDate,
-        trains: trains,
       })
     );
     navigate("/my-trips/" + id);
@@ -182,7 +172,7 @@ function formatDateForInput(dateString) {
       return setIsDialogOpen(true);
     }
     if (
-      !formData?.startLocation ||
+      // !formData?.startLocation ||
       // !formData?.startDate ||
       !formData?.noOfDays ||
       !formData?.location ||
@@ -191,9 +181,9 @@ function formatDateForInput(dateString) {
     ) {
       return toast.error("Please fill out every field or select every option.");
     }
-    if(!date) {
-      return toast.error("as");
-    }
+    // if(!date) {
+    //   return toast.error("as");
+    // }
     if (formData?.noOfDays > 10) {
       return toast.error("Please enter Trip Days less then 10");
     }
@@ -209,6 +199,11 @@ function formatDateForInput(dateString) {
       .replace(/{noOfDays}/g, formData?.noOfDays)
       .replace(/{People}/g, formData?.People)
       .replace(/{Budget}/g, formData?.Budget);
+
+    const newTripPrompt_Final = newTripPrompt.replace(/{location}/g, formData?.location)
+    .replace(/{noOfDays}/g, formData?.noOfDays)
+    .replace(/{People}/g, formData?.People)
+    .replace(/{Budget}/g, formData?.Budget);
 
     const TravelCostPrompt = TravelPrompt.replace(
       /{location}/g,
@@ -230,30 +225,34 @@ function formatDateForInput(dateString) {
       });
 
       setIsLoading(true);
-      const result = await chatSession.sendMessage(FINAL_PROMPT);
+      const result = await getNewTrip.sendMessage(newTripPrompt_Final);
+      // const result = await chatSession.sendMessage(FINAL_PROMPT);
       const trip = JSON.parse(result.response.text());
 
-      const travelCost = await getTravelCostDetails.sendMessage(
-        TravelCostPrompt
-      );
-      const transportCost = JSON.parse(travelCost.response.text());
+      // const travelCost = await getTravelCostDetails.sendMessage(
+      //   TravelCostPrompt
+      // );
+      // const transportCost = JSON.parse(travelCost.response.text());
 
-      const stationCodes = await getStationCodeCall.sendMessage(
-        getStationCodeFinalPrompt
-      );
-      const stationCodeData = JSON.parse(stationCodes.response.text());
+      // const stationCodes = await getStationCodeCall.sendMessage(
+      //   getStationCodeFinalPrompt
+      // );
+      // const stationCodeData = JSON.parse(stationCodes.response.text());
 
-      const trains = await getTrains(stationCodeData.source, stationCodeData.destination, finalDate);
-      // console.log("Trains", trains);
+      // const trains = await getTrains(stationCodeData.source, stationCodeData.destination, finalDate);
+      // // console.log("Trains", trains);
 
-      const food = await getFood.sendMessage(getFoodPromptFinal);
-      const foodCost = JSON.parse(food.response.text());
+      // const food = await getFood.sendMessage(getFoodPromptFinal);
+      // const foodCost = JSON.parse(food.response.text());
 
       setIsLoading(false);
-      SaveTrip(trip, transportCost, stationCodeData, finalDate, trains, foodCost);
+      SaveTrip(trip);
+      // SaveTrip(trip, transportCost, stationCodeData, finalDate, trains, foodCost);
+      SaveTrip(trip);
 
+      // const tripData = { trip };
       // const tripData = { trip, transportCost, stationCodeData, finalDate, trains, foodCost };
-      // downloadJSON(tripData);
+      // downloadJSON(trip);
 
       toast.dismiss(toastId);
       toast.success("Trip Generated Successfully");
@@ -286,7 +285,7 @@ function formatDateForInput(dateString) {
       </div>
 
       <div className="form mt-14 flex flex-col gap-16 md:gap-20 ">
-        <div className="startLocation">
+        {/* <div className="startLocation">
           <h2 className="font-semibold text-lg md:text-xl mb-3 ">
             <span className="bg-gradient-to-b from-primary/90 to-primary/60 bg-clip-text text-transparent">
               From Where we will Start the Advanture?
@@ -303,7 +302,7 @@ function formatDateForInput(dateString) {
             }}
             placeholder="Enter Source Location"
           />
-        </div>
+        </div> */}
 
         <div className="place">
           <h2 className="font-semibold text-lg md:text-xl mb-3 ">
@@ -345,7 +344,7 @@ function formatDateForInput(dateString) {
             />
           </div>
 
-          <div className="date w-full">
+          {/* <div className="date w-full">
             <h2 className="font-semibold text-lg md:text-xl mb-3 ">
               <span className="bg-gradient-to-b from-primary/90 to-primary/60 bg-clip-text text-transparent">
                 Select Start Date
@@ -353,7 +352,7 @@ function formatDateForInput(dateString) {
               📅
             </h2>
             <DatePickerDemo date={date} setDate={setDate}></DatePickerDemo>
-          </div>
+          </div> */}
         </div>
 
         <div className="budget">
